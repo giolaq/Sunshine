@@ -1,5 +1,8 @@
 package com.laquysoft.sunshine;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -27,6 +30,7 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +58,38 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        boolean result = false;
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                result = true;
+                break;
+            case R.id.view_on_map:
+                String location = PreferenceManager
+                        .getDefaultSharedPreferences(this)
+                        .getString(getString(R.string.pref_location_key),
+                                getString(R.string.pref_location_default));
 
-        return super.onOptionsItemSelected(item);
+
+                Intent locationView = new Intent(Intent.ACTION_VIEW);
+                locationView.setData(Uri.parse("geo:0,0?q=" + location));
+
+                if ( locationView.resolveActivity(getPackageManager()) != null ) {
+                    startActivity(locationView);
+                    result = true;
+
+                } else
+                {
+                    Log.d(LOG_TAG, "Couldn't call "
+                            + location + " No suitabile activity found");
+                    result = false;
+                }
+                break;
+            default:
+                result = super.onOptionsItemSelected(item);
+                break;
+        }
+        return result;
     }
 
 
