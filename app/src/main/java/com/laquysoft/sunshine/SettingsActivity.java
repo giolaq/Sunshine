@@ -8,6 +8,11 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.laquysoft.sunshine.data.WeatherContract;
 
@@ -24,6 +29,8 @@ public class SettingsActivity extends PreferenceActivity
 
     private boolean mBindingPreference;
 
+    private Toolbar mActionBar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +42,27 @@ public class SettingsActivity extends PreferenceActivity
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_location_key)));
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_units_key)));
 
+        mActionBar.setTitle(getTitle());
+
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        ViewGroup contentView = (ViewGroup) LayoutInflater.from(this).inflate(
+                R.layout.settings_activity, new LinearLayout(this), false);
+
+        mActionBar = (Toolbar) contentView.findViewById(R.id.action_bar);
+        mActionBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        ViewGroup contentWrapper = (ViewGroup) contentView.findViewById(R.id.content_wrapper);
+        LayoutInflater.from(this).inflate(layoutResID, contentWrapper, true);
+
+        getWindow().setContentView(contentView);
     }
 
     /**
