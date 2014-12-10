@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.laquysoft.sunshine.data.WeatherContract;
+import com.laquysoft.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
@@ -94,17 +95,14 @@ public class SettingsActivity extends PreferenceActivity
 
 
         // are we starting the preference activity?
-        if (!mBindingPreference) {
+        if ( !mBindingPreference ) {
             if (preference.getKey().equals(getString(R.string.pref_location_key))) {
-                FetchWeatherTask weatherTask = new FetchWeatherTask(this);
-                String location = value.toString();
-                weatherTask.execute(location);
+                SunshineSyncAdapter.syncImmediately(this);
             } else {
                 // notify code that weather may be impacted
                 getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
             }
         }
-
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
