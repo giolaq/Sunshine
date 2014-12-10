@@ -61,40 +61,11 @@ public class MainActivity extends ActionBarActivity  implements ForecastFragment
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        boolean result = false;
-        switch (id) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                result = true;
-                break;
-            case R.id.view_on_map:
-                String location = PreferenceManager
-                        .getDefaultSharedPreferences(this)
-                        .getString(getString(R.string.pref_location_key),
-                                getString(R.string.pref_location_default));
-
-
-                Intent locationView = new Intent(Intent.ACTION_VIEW);
-                locationView.setData(Uri.parse("geo:0,0?q=" + location));
-
-                if ( locationView.resolveActivity(getPackageManager()) != null ) {
-                    startActivity(locationView);
-                    result = true;
-
-                } else
-                {
-                    Log.d(LOG_TAG, "Couldn't call "
-                            + location + " No suitabile activity found");
-                    result = false;
-                }
-                break;
-            default:
-                result = super.onOptionsItemSelected(item);
-                break;
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
         }
-        return result;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
